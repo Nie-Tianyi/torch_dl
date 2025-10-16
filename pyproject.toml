@@ -10,7 +10,28 @@ dependencies = [
     "torchvision>=0.23.0",
 ]
 
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu129", marker = "sys_platform == 'windows'"},
+    { index = "pytorch-cpu", marker = "sys_platform != 'windows'"},
+]
+
+torchvision = [
+    { index = "pytorch-cu129", marker = "sys_platform == 'windows'"},
+    { index = "pytorch-cpu", marker = "sys_platform != 'windows'"},
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
 [dependency-groups]
 dev = [
-    "ruff>=0.12.10",
+    "ruff>=0.13",
 ]
