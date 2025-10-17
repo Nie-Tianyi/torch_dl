@@ -11,3 +11,6 @@ wheels/
 
 # idea cofig
 .idea
+
+# data
+data/
