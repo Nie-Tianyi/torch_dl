@@ -62,7 +62,7 @@ if __name__ == "__main__":
         transform=ToTensor(),
     )
 
-    train_dataloader: DataLoader[MNIST] = DataLoader(train_data, batch_size=256)
+    train_dataloader: DataLoader[MNIST] = DataLoader(train_data, batch_size=1024)
 
     test_data: MNIST = datasets.MNIST(
         root="../data",
