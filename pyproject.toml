@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Deep learning project with PyTorch and CUDA support"
 requires-python = ">=3.13"
 dependencies = [
+    "ipykernel>=7.1.0",
     "matplotlib>=3.10.5",
     "pandas>=2.3.2",
     "scikit-learn>=1.7.2",
