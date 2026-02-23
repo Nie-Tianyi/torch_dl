@@ -78,7 +78,7 @@ if __name__ == "__main__":
     ce_loss: CrossEntropyLoss = nn.CrossEntropyLoss()
 
     model.train()
-    for epoch in range(10):
+    for epoch in range(30):
         for x, y in train_dataloader:
             x, y = x.to(device), y.to(device)
             y_hat = model(x)
