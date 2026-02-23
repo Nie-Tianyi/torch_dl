@@ -8,6 +8,7 @@ from torchvision import datasets
 from torchvision.datasets import MNIST
 from torchvision.transforms.v2 import ToTensor
 
+
 class FCNeuralNetwork(nn.Module):
     def __init__(self, input_dim: int, output_dim: int) -> None:
         super(FCNeuralNetwork, self).__init__()
@@ -26,7 +27,10 @@ class FCNeuralNetwork(nn.Module):
         x4 = self.fc4(x3)
         return x4
 
-def calculate_accuracy(model: FCNeuralNetwork, dataloader: DataLoader[MNIST], device: str) -> float:
+
+def calculate_accuracy(
+    model: FCNeuralNetwork, dataloader: DataLoader[MNIST], device: str
+) -> float:
     """计算模型在给定数据加载器上的准确率"""
     model.eval()
     correct = 0

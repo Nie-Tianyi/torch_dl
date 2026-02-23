@@ -3,12 +3,17 @@ from hanzi2image import display_gray_matrix
 
 import torch
 import torch.nn as nn
-from hanzi2image import render_hanzi_to_gray # 必须用同一个函数
+from hanzi2image import render_hanzi_to_gray  # 必须用同一个函数
+
 
 class ChineseEncoder128(nn.Module):
     def __init__(self, model_path="chinese_cae_128.pth", device=None):
         super(ChineseEncoder128, self).__init__()
-        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = (
+            device
+            if device
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        )
 
         # 结构必须和 ChineseCAE32 里的 self.encoder 完全一致
         self.encoder = nn.Sequential(
@@ -37,26 +42,39 @@ class ChineseEncoder128(nn.Module):
     def forward(self, char):
         # 必须使用和你训练时一模一样的预处理
         img = render_hanzi_to_gray(char, size=32)
-        tensor = torch.from_numpy(img).float().view(1, 1, 32, 32).to(self.device) / 255.0
+        tensor = (
+            torch.from_numpy(img).float().view(1, 1, 32, 32).to(self.device) / 255.0
+        )
 
         with torch.no_grad():
             latent = self.encoder(tensor)
         return latent.squeeze()
 
+
 class ChineseDecoder128(nn.Module):
     def __init__(self, model_path="chinese_cae_128.pth", device=None):
         super(ChineseDecoder128, self).__init__()
-        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = (
+            device
+            if device
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        )
 
         self.decoder = nn.Sequential(
             nn.Linear(128, 64 * 4 * 4),
             nn.ReLU(),
             nn.Unflatten(1, (64, 4, 4)),
-            nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ConvTranspose2d(
+                64, 32, kernel_size=3, stride=2, padding=1, output_padding=1
+            ),
             nn.ReLU(),
-            nn.ConvTranspose2d(32, 16, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ConvTranspose2d(
+                32, 16, kernel_size=3, stride=2, padding=1, output_padding=1
+            ),
             nn.ReLU(),
-            nn.ConvTranspose2d(16, 1, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ConvTranspose2d(
+                16, 1, kernel_size=3, stride=2, padding=1, output_padding=1
+            ),
             nn.Sigmoid(),
         )
 
@@ -68,7 +86,8 @@ class ChineseDecoder128(nn.Module):
         self.eval()
 
     def forward(self, z):
-        if z.dim() == 1: z = z.unsqueeze(0)
+        if z.dim() == 1:
+            z = z.unsqueeze(0)
         with torch.no_grad():
             out = self.decoder(z)
         return out.cpu().squeeze().numpy() * 255

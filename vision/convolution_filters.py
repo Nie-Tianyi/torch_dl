@@ -6,6 +6,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 
+
 # 1. 定义CNN模型
 class SimpleCNN(nn.Module):
     def __init__(self):
@@ -39,31 +40,25 @@ class SimpleCNN(nn.Module):
 
         return x
 
+
 # 2. 数据准备
 def prepare_data():
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))
-    ])
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
+    )
 
     # 加载MNIST数据集
     train_dataset = datasets.MNIST(
-        './data',
-        train=True,
-        download=True,
-        transform=transform
+        "./data", train=True, download=True, transform=transform
     )
-    test_dataset = datasets.MNIST(
-        './data',
-        train=False,
-        transform=transform
-    )
+    test_dataset = datasets.MNIST("./data", train=False, transform=transform)
 
     # 创建数据加载器
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
     return train_loader, test_loader
+
 
 # 3. 训练函数
 def train_model(model, train_loader, device, epochs=5):
@@ -98,17 +93,22 @@ def train_model(model, train_loader, device, epochs=5):
             correct += predicted.eq(target).sum().item()
 
             if batch_idx % 100 == 0:
-                print(f'Epoch: {epoch+1}, Batch: {batch_idx}, Loss: {loss.item():.4f}')
+                print(
+                    f"Epoch: {epoch + 1}, Batch: {batch_idx}, Loss: {loss.item():.4f}"
+                )
 
         epoch_loss = running_loss / len(train_loader)
-        epoch_acc = 100. * correct / total
+        epoch_acc = 100.0 * correct / total
 
         train_losses.append(epoch_loss)
         train_accuracies.append(epoch_acc)
 
-        print(f'Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%')
+        print(
+            f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%"
+        )
 
     return train_losses, train_accuracies
+
 
 # 4. 测试函数
 def test_model(model, test_loader, device):
@@ -124,43 +124,42 @@ def test_model(model, test_loader, device):
             total += target.size(0)
             correct += predicted.eq(target).sum().item()
 
-    accuracy = 100. * correct / total
-    print(f'Test Accuracy: {accuracy:.2f}%')
+    accuracy = 100.0 * correct / total
+    print(f"Test Accuracy: {accuracy:.2f}%")
     return accuracy
+
 
 def main():
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f'Using device: {device}')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
 
     train_loader, test_loader = prepare_data()
 
     model = SimpleCNN().to(device)
     print(model)
 
-    train_losses, train_accuracies = train_model(
-        model, train_loader, device, epochs=20
-    )
+    train_losses, train_accuracies = train_model(model, train_loader, device, epochs=20)
 
     test_accuracy = test_model(model, test_loader, device)
-
 
     plt.figure(figsize=(12, 4))
 
     plt.subplot(1, 2, 1)
-    plt.plot(train_losses, label='Training Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
+    plt.plot(train_losses, label="Training Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
     plt.legend()
 
     plt.subplot(1, 2, 2)
-    plt.plot(train_accuracies, label='Training Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy (%)')
+    plt.plot(train_accuracies, label="Training Accuracy")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy (%)")
     plt.legend()
 
     plt.tight_layout()
     plt.show()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
