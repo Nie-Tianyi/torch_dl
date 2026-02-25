@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Deep learning project with PyTorch and CUDA support"
 requires-python = ">=3.13"
 dependencies = [
+    "d2l>=0.17.0",
     "ipykernel>=7.1.0",
     "matplotlib>=3.10.5",
     "notebook>=7.4.7",
