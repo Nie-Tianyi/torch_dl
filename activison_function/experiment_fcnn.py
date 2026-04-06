@@ -11,10 +11,9 @@ def experiment_on_fcnn(activation_function):
     print(f"Using device: {device}")
 
     # 定义转换组合
-    my_transforms = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
-    ])
+    my_transforms = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+    )
 
     train_data = datasets.MNIST(
         root="./data", train=True, transform=my_transforms, download=True
@@ -22,10 +21,7 @@ def experiment_on_fcnn(activation_function):
     train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
 
     model = nn.Sequential(
-        nn.Flatten(),
-        nn.Linear(784, 128),
-        activation_function(),
-        nn.Linear(128, 10)
+        nn.Flatten(), nn.Linear(784, 128), activation_function(), nn.Linear(128, 10)
     ).to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)

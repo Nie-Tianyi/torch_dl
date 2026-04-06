@@ -156,10 +156,10 @@ class MultiHeadAttention(nn.Module):
 class Transformer(nn.Module):
     def __init__(
         self,
-        src_vocab,
-        tgt_vocab,
-        d_model=512,
-        n_layers=6,
+        src_vocab, # 来源词汇表长度
+        tgt_vocab, # 目标词汇表长度
+        d_model=512, # 模型输入的词向量的维度
+        n_layers=6, # 6 个encoder + 6个decoder
         n_heads=8,
         d_ff=2048,
         dropout=0.1,
@@ -168,12 +168,12 @@ class Transformer(nn.Module):
         # 1. 词向量层
         self.src_embed = nn.Embedding(src_vocab, d_model)
         self.tgt_embed = nn.Embedding(tgt_vocab, d_model)
-        self.pos_encoding = PositionalEncoding(d_model, dropout)
+        self.pos_encoding = PositionalEncoding(d_model)
 
         # 2. 编码器堆叠 (Deep Copying N layers)
         from copy import deepcopy
 
-        self.mha = MultiHeadAttention(d_model, n_heads)  # 假设已定义之前的 MHA 代码
+        self.mha = MultiHeadAttention(d_model, n_heads)
         self.ffn = FeedForward(d_model, d_ff, dropout)
 
         self.encoder_layers = nn.ModuleList(

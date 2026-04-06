@@ -10,26 +10,20 @@ class SimpleCNN(nn.Module):
 
         self.conv_unit = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, padding=1),
-            nn.BatchNorm2d(32), # 必须加 BN，因为 x^2 对方差太敏感
+            nn.BatchNorm2d(32),  # 必须加 BN，因为 x^2 对方差太敏感
             self.act,
             nn.MaxPool2d(2),
-
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
             nn.BatchNorm2d(64),
             self.act,
             nn.MaxPool2d(2),
-
             nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.BatchNorm2d(128),
             self.act,
-            nn.AdaptiveAvgPool2d((1, 1))
+            nn.AdaptiveAvgPool2d((1, 1)),
         )
 
-        self.fc_unit = nn.Sequential(
-            nn.Linear(128, 64),
-            self.act,
-            nn.Linear(64, 10)
-        )
+        self.fc_unit = nn.Sequential(nn.Linear(128, 64), self.act, nn.Linear(64, 10))
 
     def forward(self, x):
         x = self.conv_unit(x)
@@ -49,9 +43,8 @@ def test_model(model, testloader, device):
             _, predicted = outputs.max(1)
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
-    test_acc = 100. * correct / total
+    test_acc = 100.0 * correct / total
     return test_acc
-
 
 
 def train_config(activation_function, device, trainloader, testloader, epochs=20):
@@ -92,14 +85,15 @@ def train_config(activation_function, device, trainloader, testloader, epochs=20
 
         # 计算本轮指标
         epoch_loss = running_loss / len(trainloader)
-        epoch_train_acc = 100. * correct / total
+        epoch_train_acc = 100.0 * correct / total
         epoch_test_acc = test_model(model, testloader, device)
 
         train_losses.append(epoch_loss)
         train_accs.append(epoch_train_acc)
         test_accs.append(epoch_test_acc)
 
-
-        print(f"Loss: {epoch_loss:.4f} | Train Acc: {epoch_train_acc:.2f}% | Test Acc: {epoch_test_acc:.2f}%")
+        print(
+            f"Loss: {epoch_loss:.4f} | Train Acc: {epoch_train_acc:.2f}% | Test Acc: {epoch_test_acc:.2f}%"
+        )
 
     return train_losses, train_accs, test_accs
